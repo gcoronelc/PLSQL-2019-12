@@ -13,7 +13,7 @@
 - Código fuente: https://goo.gl/GRaOQg
 - Youtube: https://www.youtube.com/c/DesarrollaSoftware
 - Videos: https://bit.ly/2CgwpwM
-- Chat WS: https://chat.whatsapp.com/H6BBebNDZHEAqAk6gTU5ZS
+
 
 ## DOCENTE
 
@@ -24,6 +24,7 @@
 - Facebook 1: https://www.facebook.com/groups/universidadjava/
 - Facebook 2: https://www.facebook.com/groups/desarrollasoftware/
 - Facebook 3: https://www.facebook.com/groups/bolsa.sistemas/
+- Chat WS: https://chat.whatsapp.com/H6BBebNDZHEAqAk6gTU5ZS
 
 
 ## TALLERES ANTERIORES
