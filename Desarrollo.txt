@@ -1,5 +1,8 @@
 CLASE 01
 
+1.- Instalación de Git for Windows
+2.- Clonación de repositorios
+3.- 
 
 
 
