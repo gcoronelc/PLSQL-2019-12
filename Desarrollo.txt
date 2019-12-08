@@ -1,0 +1,40 @@
+CLASE 01
+
+1.- Repositorio en GitHub 
+2.- Instalación de ORACLE
+3.- Introducción a ORACLE
+4.- Introducción a SQL*Plus
+5.- Introducción a SQL Developer
+6.- Estructuras de almacenamiento
+7.- Mod02 - Esquemas ejemplo
+8.- Mod03 - Fundamentos del Lenguaje
+
+CLASE 02
+
+1.- Mod09 - Funciones y Procedimientos
+2.- Mod04 - Estructuras de Control
+3.- Mod06 - Ecepciones
+
+
+
+CLASE 03
+
+1.- Tablas temporales y sequencias
+2.- Mod08
+3.- Paquetes
+4.- Transacciones
+5.- Transacciones con multiples filas
+6.- Cursores
+
+
+
+
+CLASE 04
+1.- Database Link
+2.- Sinonimos
+3.- Cursores
+4.- Triggers
+5.- Examen
+
+
+
