@@ -82,3 +82,46 @@ begin
 end;
 /
 
+select e.*, scott.fn_salario(sal) "Tipo de Salario"
+from scott.emp e;
+
+
+-- LOOP
+
+SET SERVEROUTPUT ON
+
+declare
+  cont number := 0;
+begin
+  loop
+    dbms_output.put_line('ALIANZA CAMPEON');
+    cont := cont + 1;
+    exit when cont >= 10;
+  end loop;
+end;
+/
+
+
+-- FOR
+
+create or replace function SCOTT.FN_FACT 
+( n number ) return number 
+is  
+  f number := 1; 
+begin  
+  for k in 2 .. n loop   
+    f := f * k;  
+  end loop;  
+  return f; 
+end; 
+/ 
+
+SELECT SCOTT.FN_FACT(5) FROM DUAL;
+
+BEGIN
+  FOR N IN 1..10 LOOP
+    DBMS_OUTPUT.PUT_LINE( 'FACTORIAL DE ' || N || ' ES '
+      || SCOTT.FN_FACT(N) );
+  END LOOP;
+END;
+/
