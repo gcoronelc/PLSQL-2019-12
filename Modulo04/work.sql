@@ -129,9 +129,11 @@ END;
 
 -- Aplicación de Tabla temporal
 
+drop table EUREKA.RESUMEN;
+
 create global temporary table EUREKA.RESUMEN (
-  id number primary key,   
-  suc_codigo varchar2(10),
+  -- id number primary key,   
+  suc_codigo varchar2(10) primary key,
   suc_nombre varchar2(200),
   saldo_soles number(12,2),
   saldo_dolares number(12,2)
@@ -154,7 +156,6 @@ BEGIN
   select eureka.SQ_RESUMEN.nextval,chr_sucucodigo, vch_sucunombre 
   from EUREKA.sucursal;
   -- Calcular saldos
-  -- caso 1
   for r in (select * from EUREKA.RESUMEN) loop
     
     select sum(dec_cuensaldo) into v_ssoles 
@@ -178,50 +179,117 @@ END;
 /
 
 
-call EUREKA.CREAR_RESUMEN();
 
+-- VARRAYS
 
-select * from EUREKA.RESUMEN;
-
-
-
-CREATE OR REPLACE PROCEDURE EUREKA.CREAR_RESUMEN
-IS
-  v_ssoles number;
-  v_sdolares number;
-BEGIN
-  -- Limpiar tabla
-  delete from EUREKA.RESUMEN;
-  -- Carga inicial de datos
-  insert into EUREKA.RESUMEN(id,suc_codigo, suc_nombre)
-  select eureka.SQ_RESUMEN.nextval,chr_sucucodigo, vch_sucunombre 
-  from EUREKA.sucursal;
-  -- Calcular saldos
-  -- caso 1
-  for r in (select * from EUREKA.RESUMEN) loop
-    
-    select sum(dec_cuensaldo) into v_ssoles 
-    from eureka.cuenta
-    where chr_monecodigo = '01'
-    and chr_sucucodigo = r.suc_codigo;
-    
-    select sum(dec_cuensaldo) into v_sdolares 
-    from eureka.cuenta
-    where chr_monecodigo = '02'
-    and chr_sucucodigo = r.suc_codigo;
-    
-    update EUREKA.RESUMEN
-    set saldo_soles = nvl(v_ssoles,0), 
-        saldo_dolares = nvl(v_sdolares,0)
-    where id = r.id;
-    
-  end loop;
-  commit;
-END;
+DECLARE  
+  -- Definimos los tipos de datos  
+  TYPE AlumnosArray IS VARRAY(15) OF VARCHAR2(100);  
+  TYPE NotasArray IS VARRAY(15) OF NUMBER(4);  
+  -- Definiendo las variables  
+  alumnos AlumnosArray;  
+  notas   NotasArray; 
+BEGIN  
+  -- Creando los arreglos  
+  alumnos := AlumnosArray('Gustavo','Lucero','Ricardo','Andrea','Laura');
+  notas := NotasArray(20,18,16,10,15);  
+  -- Propiedades
+  dbms_output.PUT_LINE( 'PROPIEDADES'  );  
+  dbms_output.PUT_LINE( 'COUNT:' || alumnos.COUNT);  
+  dbms_output.PUT_LINE( 'LIMIT:' || alumnos.LIMIT);  
+  
+  alumnos.EXTEND;
+  alumnos(6) := 'ANGEL';
+  notas.EXTEND;
+  notas(6) := 20;
+  
+  dbms_output.PUT_LINE( 'PROPIEDADES'  );  
+  dbms_output.PUT_LINE( 'COUNT:' || alumnos.COUNT);  
+  dbms_output.PUT_LINE( 'LIMIT:' || alumnos.LIMIT);  
+  
+  -- Mostrando los arreglos  
+  dbms_output.PUT_LINE( 'DATOS' );  
+  FOR i IN 1 .. alumnos.count LOOP   
+    dbms_output.PUT_LINE( alumnos(i) || ' - ' || notas(i) );  
+  END LOOP; 
+END; 
 /
-         
+     
+
+
+-- TABLA ASOCIATIVA
+
+DECLARE  
+  TYPE ARRAY_NOTAS IS TABLE OF NUMBER   
+  INDEX BY BINARY_INTEGER;  
+  NOTAS ARRAY_NOTAS; 
+BEGIN  
+  -- CARGAR NOTAS  
+  NOTAS(1) := 20;  
+  NOTAS(2) := 18;  
+  NOTAS(3) := 15;  
+  NOTAS(4) := 17; 
+  NOTAS(3) := 20;
+  -- MOSTRAR NOTAS  
+  FOR I IN 1..NOTAS.COUNT LOOP   
+    DBMS_OUTPUT.PUT_LINE('NOTA ' || I || ': ' || NOTAS(I));  
+  END LOOP; 
+  
+  
+END; 
+/
 
 
 
-         
+DECLARE  
+  TYPE ARRAY_NOTAS IS TABLE OF NUMBER   
+  INDEX BY BINARY_INTEGER;  
+  NOTAS ARRAY_NOTAS; 
+BEGIN  
+  -- CARGAR NOTAS  
+  NOTAS(1) := 20;  
+  NOTAS(2) := 18;  
+  NOTAS(3) := 15;  
+  NOTAS(4) := 17; 
+  NOTAS(8) := 20;
+  -- INFORMACIÓN
+  dbms_output.PUT_LINE( 'PROPIEDADES'  );  
+  dbms_output.PUT_LINE( 'COUNT:' || NOTAS.COUNT());  
+  dbms_output.PUT_LINE( 'LIMIT:' || NOTAS.LIMIT());
+  
+  -- MOSTRAR NOTAS  
+  /*
+  FOR I IN 1..NOTAS.COUNT LOOP   
+    DBMS_OUTPUT.PUT_LINE('NOTA ' || I || ': ' || NOTAS(I));  
+  END LOOP;   
+  */
+END; 
+/
+ 
+
+
+DECLARE  
+	TYPE tabla_varchar2 IS TABLE OF VARCHAR2(100);  
+	empleados   tabla_varchar2 := tabla_varchar2(); 
+BEGIN  
+	-- Tamaño Inicial  
+	DBMS_OUTPUT.PUT_LINE('Tamaño Inicial: ' || empleados.COUNT);  
+	-- Se añaden 4 elementos  
+	empleados.EXTEND (4);  
+	empleados (1) := 'Pepe';  
+	empleados (2) := 'Elena';  
+	empleados (3) := 'Carmen';  
+	empleados (4) := 'Juan';  
+	-- Se añade un elemento mas  empleados.EXTEND;  
+	empleados (empleados.LAST) := 'Gustavo';  
+	-- Tamaño Final  
+	DBMS_OUTPUT.PUT_LINE('Tamaño Final: ' || empleados.COUNT);  
+	-- Mostrar lista  
+	FOR I IN 1 .. empleados.COUNT  LOOP   
+		DBMS_OUTPUT.put_line ( empleados(I) );  
+	END LOOP;
+END;  
+/
+
+
          
