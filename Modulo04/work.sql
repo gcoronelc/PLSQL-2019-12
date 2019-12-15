@@ -144,6 +144,8 @@ CREATE SEQUENCE eureka.SQ_RESUMEN;
 
 CREATE OR REPLACE PROCEDURE EUREKA.CREAR_RESUMEN
 IS
+  v_ssoles number;
+  v_sdolares number;
 BEGIN
   -- Limpiar tabla
   delete from EUREKA.RESUMEN;
@@ -153,6 +155,25 @@ BEGIN
   from EUREKA.sucursal;
   -- Calcular saldos
   -- caso 1
+  for r in (select * from EUREKA.RESUMEN) loop
+    
+    select sum(dec_cuensaldo) into v_ssoles 
+    from eureka.cuenta
+    where chr_monecodigo = '01'
+    and chr_sucucodigo = r.suc_codigo;
+    
+    select sum(dec_cuensaldo) into v_sdolares 
+    from eureka.cuenta
+    where chr_monecodigo = '02'
+    and chr_sucucodigo = r.suc_codigo;
+    
+    update EUREKA.RESUMEN
+    set saldo_soles = nvl(v_ssoles,0), 
+        saldo_dolares = nvl(v_sdolares,0)
+    where id = r.id;
+    
+  end loop;
+  commit;
 END;
 /
 
@@ -163,6 +184,41 @@ call EUREKA.CREAR_RESUMEN();
 select * from EUREKA.RESUMEN;
 
 
+
+CREATE OR REPLACE PROCEDURE EUREKA.CREAR_RESUMEN
+IS
+  v_ssoles number;
+  v_sdolares number;
+BEGIN
+  -- Limpiar tabla
+  delete from EUREKA.RESUMEN;
+  -- Carga inicial de datos
+  insert into EUREKA.RESUMEN(id,suc_codigo, suc_nombre)
+  select eureka.SQ_RESUMEN.nextval,chr_sucucodigo, vch_sucunombre 
+  from EUREKA.sucursal;
+  -- Calcular saldos
+  -- caso 1
+  for r in (select * from EUREKA.RESUMEN) loop
+    
+    select sum(dec_cuensaldo) into v_ssoles 
+    from eureka.cuenta
+    where chr_monecodigo = '01'
+    and chr_sucucodigo = r.suc_codigo;
+    
+    select sum(dec_cuensaldo) into v_sdolares 
+    from eureka.cuenta
+    where chr_monecodigo = '02'
+    and chr_sucucodigo = r.suc_codigo;
+    
+    update EUREKA.RESUMEN
+    set saldo_soles = nvl(v_ssoles,0), 
+        saldo_dolares = nvl(v_sdolares,0)
+    where id = r.id;
+    
+  end loop;
+  commit;
+END;
+/
          
 
 
