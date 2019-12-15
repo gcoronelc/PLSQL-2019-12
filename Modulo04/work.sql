@@ -125,3 +125,47 @@ BEGIN
   END LOOP;
 END;
 /
+
+
+-- Aplicación de Tabla temporal
+
+create global temporary table EUREKA.RESUMEN (
+  id number primary key,   
+  suc_codigo varchar2(10),
+  suc_nombre varchar2(200),
+  saldo_soles number(12,2),
+  saldo_dolares number(12,2)
+) on commit preserve rows; 
+
+
+CREATE SEQUENCE eureka.SQ_RESUMEN;
+
+
+
+CREATE OR REPLACE PROCEDURE EUREKA.CREAR_RESUMEN
+IS
+BEGIN
+  -- Limpiar tabla
+  delete from EUREKA.RESUMEN;
+  -- Carga inicial de datos
+  insert into EUREKA.RESUMEN(id,suc_codigo, suc_nombre)
+  select eureka.SQ_RESUMEN.nextval,chr_sucucodigo, vch_sucunombre 
+  from EUREKA.sucursal;
+  -- Calcular saldos
+  -- caso 1
+END;
+/
+
+
+call EUREKA.CREAR_RESUMEN();
+
+
+select * from EUREKA.RESUMEN;
+
+
+         
+
+
+
+         
+         
