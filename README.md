@@ -35,18 +35,27 @@
 
 # CURSOS VIRTUALES
 
+## CUPONES UDEMY
 
-## JAVA ORIENTADO A OBJETOS
+- Enlace: https://github.com/gcoronelc/UDEMY
 
-URL: https://bit.ly/2B3ixUW
+## ORACLE PL/SQL
 
-[![JAVA ORIENTADO A OBJETOS](http://img.youtube.com/vi/EKlwF12-l9Y/0.jpg)](http://www.youtube.com/watch?v=EKlwF12-l9Y "JAVA ORIENTADO A OBJETOS")
+- Enlace: https://www.udemy.com/course/lenguaje-plsql/?referralCode=3B8A67CA0AADFCFB930C
 
-## PROGRAMACIÓN DE BASE DE DATOS ORACLE CON JAVA JDBC
+[![ORACLE PL/SQL](https://raw.githubusercontent.com/gcoronelc/UDEMY/master/cursos/plsql.png)](https://youtu.be/qf5IF2dJtQc "ORACLE PL/SQL")
 
-URL: https://bit.ly/31apy0O
+# JAVA ORIENTADO A OBJETOS
 
-[![JAVA JDBC CON BASE DE DATOS ORACLE](http://img.youtube.com/vi/MR53Xgeg28Y/0.jpg)](http://www.youtube.com/watch?v=MR53Xgeg28Y "JAVA JDBC CON BASE DE DATOS ORACLE")
+- Enlace: https://www.udemy.com/course/java-orientado-a-objetos/?referralCode=ED949D58C79D27158E8D
+
+[![JAVA ORIENTADO A OBJETOS](https://raw.githubusercontent.com/gcoronelc/UDEMY/master/cursos/joo.png)](http://www.youtube.com/watch?v=EKlwF12-l9Y "JAVA ORIENTADO A OBJETOS")
+
+# PROGRAMACIÓN DE BASE DE DATOS ORACLE CON JAVA JDBC
+
+- Enlace: https://www.udemy.com/course/java-jdbc-oracle/?referralCode=C518C8D3028403F7F6DF
+
+[![JAVA JDBC CON BASE DE DATOS ORACLE](https://raw.githubusercontent.com/gcoronelc/UDEMY/master/cursos/jdbc.png)](http://www.youtube.com/watch?v=MR53Xgeg28Y "JAVA JDBC CON BASE DE DATOS ORACLE")
 
 
 
