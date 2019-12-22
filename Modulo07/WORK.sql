@@ -80,4 +80,30 @@ END;
 
 
 
+-- Ejercicio
+/*
+Desarrollar un procedimiento que retorne
+los movimientos de una cuenta.
+Esquema: EUREKA
+*/
+
+create or replace procedure eureka.sp_get_movimientos
+( 
+  p_cuenta in  eureka.cuenta.chr_cuencodigo%type,
+  p_cursor out sys_refcursor
+)
+as
+begin
+  open p_cursor for 
+  select * from eureka.movimiento
+  where chr_cuencodigo = p_cuenta;
+end;
+/
+
+
+
+
+
+
+
 
