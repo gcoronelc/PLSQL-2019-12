@@ -101,7 +101,23 @@ end;
 /
 
 
-
+declare
+  v_cursor sys_refcursor;
+  v_reg eureka.movimiento%rowtype;
+begin
+  eureka.sp_get_movimientos( '00100002', v_cursor );
+  loop
+    fetch v_cursor into v_reg;
+    exit when v_cursor%notfound;
+    dbms_output.put_line(
+      v_reg.int_movinumero || ' - ' ||
+      v_reg.chr_tipocodigo || ' - ' ||
+      v_reg.dec_moviimporte
+    );
+  end loop;
+  close v_cursor;
+end;
+/
 
 
 
