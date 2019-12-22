@@ -120,6 +120,53 @@ end;
 /
 
 
+-- cursores implicitos
+
+begin
+  update scott.emp
+  set sal = sal * 0.9;
+  dbms_output.put_line('Filas afectadas: ' || SQL%rowcount);
+  rollback;
+end;
+/
+
+
+create or replace procedure SCOTT.SP_UPDATE_SAL
+( P_CODIGO number, P_INCREMENTO number)
+is
+begin
+  update SCOTT.emp
+  set sal = sal + P_INCREMENTO
+  where empno = P_CODIGO;
+  if sql%notfound then
+    dbms_output.put_line('CODIGO no existe');
+  else
+    commit;
+    dbms_output.put_line('proceso ok');
+  end if;
+end;
+/
+
+
+CALL SCOTT.SP_UPDATE_SAL(7339,100);
+
+
+
+DECLARE
+  CURSOR C_MOV ( P_CUENTA VARCHAR2) IS
+  select * from eureka.movimiento
+  where chr_cuencodigo = P_CUENTA;
+BEGIN
+  FOR R IN C_MOV('00100001') LOOP
+    dbms_output.put_line(
+      R.int_movinumero || ' - ' ||
+      R.chr_tipocodigo || ' - ' ||
+      R.dec_moviimporte
+    );
+  END LOOP;
+END;
+/
+
 
 
 
