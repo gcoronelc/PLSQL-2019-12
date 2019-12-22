@@ -24,6 +24,10 @@ CALL SCOTT.SP_EXECUTE(
 );
 /
 
+insert into scott.emp(empno,ename) values(6565,'Maryuri');
+
+select * from scott.emp;
+
 
 
 
