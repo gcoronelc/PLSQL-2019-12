@@ -18,12 +18,18 @@ CLASE 02
 2.- Modulo 05
 3.- Modulo 06
 
-CLASE 02
+CLASE 03
 ---------------------------------------------
 1.- Modulo 07
 2.- Modulo 08
-3.- Modulo 12
-4.- Modulo 10
+3.- Modulo 10
+4.- Modulo 12
+
+
+CLASE 04
+---------------------------------------------
+1.- Modulo 09
+2.- Modulo 11
 
 
 
