@@ -1,0 +1,38 @@
+--CRUD 
+--SELECCION, INSERCION,MODIFICACION, ELIMINACION 
+SET TERMOUT OFF
+SET ECHO OFF
+--CABECERA (ESTRUCTURAS)
+create or replace PACKAGE CrudRecibos1
+AS 
+
+   PROCEDURE SP_SelecRecibos(
+     p_idrecibo IN INTEGER,
+     p_idcliente IN INTEGER,
+     v_msj OUT  SYS_REFCURSOR
+    );
+ 
+   PROCEDURE SP_InsertRecibo(
+     P_idcliente IN INTEGER,
+     P_idusuario IN INTEGER 
+    );
+    
+    PROCEDURE SP_InsertarReciboD(
+     p_cantidad  IN INTEGER ,
+     p_idrecibo IN INTEGER,
+     p_idconcepto IN INTEGER ,
+	 p_idescuela IN INTEGER);
+   
+    PROCEDURE SP_ModificarRecibo(
+     pr_idrecibo IN INTEGER ,
+     pr_idcliente IN INTEGER,
+     pr_idusuario IN INTEGER
+    );
+ 
+    PROCEDURE SP_EliminarRecibo(
+    p_idrecibo IN INTEGER
+    );
+    PROCEDURE SP_EliminarReciboD(
+        p_idreciboD IN INTEGER);
+   
+END CrudRecibos1;

@@ -1,0 +1,87 @@
+--PRUEBAS
+
+
+--Prueba de insercion recibo
+SET SERVEROUT ON;
+begin
+ CrudRecibos1.SP_InsertRecibo(1,2);
+Exception
+    When VALUE_ERROR Then
+    DBMS_Output.Put_Line( 'conflicto de tipos de datos' );
+end;
+/
+
+select * from recibodetalle;
+
+
+
+ PROCEDURE SP_ModificarReciboD(
+     p_cantidad  IN INTEGER ,
+     p_idrecibo IN INTEGER,
+     p_idconcepto IN INTEGER ,
+	 p_idescuela IN INTEGER);
+--Prueba de insercion recibo
+SET SERVEROUT ON;
+begin
+ CrudRecibos1.SP_InsertarReciboD(1,25,2,1);
+Exception
+    When VALUE_ERROR Then
+    DBMS_Output.Put_Line( 'conflicto de tipos de datos' );
+end;
+/
+
+select * from recibo;
+
+--Prueba de modificar recibo
+SET SERVEROUT ON;
+begin
+ CrudRecibos1.SP_ModificarRecibo(25,3,3);
+Exception
+    When VALUE_ERROR Then
+    DBMS_Output.Put_Line( 'conflicto de tipos de datos' );
+end;
+/
+
+select * from recibo;
+
+--Prueba de elimininar recibo
+SET SERVEROUT ON;
+begin
+ CrudRecibos1.SP_EliminarRecibo(22);
+Exception
+    When VALUE_ERROR Then
+    DBMS_Output.Put_Line( 'conflicto de tipos de datos' );
+end;
+/
+
+select * from recibo;
+select * from recibodetalle where idrecibo=22;
+
+--Prueba de elimininar recibo detalle
+SET SERVEROUT ON;
+begin
+ CrudRecibos1.SP_EliminarReciboD(34);
+Exception
+    When VALUE_ERROR Then
+    DBMS_Output.Put_Line( 'conflicto de tipos de datos' );
+end;
+/
+
+select * from recibodetalle;
+select * from recibo;
+select * from recibodetalle where idrecibo=22;
+
+--prueba SP_SelecRecibos
+
+
+var usercur refcursor;
+exec CrudRecibos1.SP_SelecRecibos(2,2,:usercur);
+print usercur;
+
+var usercur refcursor;
+exec CrudRecibos1.SP_SelecRecibos(null,2,:usercur);
+print usercur;
+
+var usercur refcursor;
+exec CrudRecibos1.SP_SelecRecibos(2,null,:usercur);
+print usercur;

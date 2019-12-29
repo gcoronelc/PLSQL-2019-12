@@ -1,0 +1,11 @@
+SE HA ELIMINADO UN REGISTRO!!
+
+
+Error que empieza en la línea: 158 del comando :
+DELETE RECIBO
+WHERE IDRECIBO=28
+Informe de error -
+ORA-04091: la tabla PAGOS.RECIBO está mutando, puede que el disparador/la función no puedan verla
+ORA-06512: en "PAGOS.ACTUALIZAR_CONSOLIDADO_PAGOS", línea 24
+ORA-04088: error durante la ejecución del disparador 'PAGOS.ACTUALIZAR_CONSOLIDADO_PAGOS'
+

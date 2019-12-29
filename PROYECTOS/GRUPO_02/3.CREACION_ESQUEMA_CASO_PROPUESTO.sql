@@ -1,0 +1,182 @@
+
+SET TERMOUT OFF
+SET ECHO OFF
+
+-----------*** CREACIÓN DEL USUARIO ***--------------
+
+-- En caso existiera el usuario pagos lo elimina
+DECLARE
+	N INT;
+	COMMANDO VARCHAR2(100);
+BEGIN
+	COMMANDO := 'DROP USER PAGOS CASCADE';
+	SELECT COUNT(*) INTO N
+	FROM DBA_USERS
+	WHERE USERNAME = 'PAGOS';
+	CASE N
+	WHEN 1 THEN
+	EXECUTE IMMEDIATE COMMANDO;
+	END CASE;	
+END;
+/
+-- crea el usuario, y la contraseña con la que se autenticara el usuario
+CREATE USER pagos IDENTIFIED BY contra;
+-- Se le añade privilegios al usuario
+GRANT CONNECT, RESOURCE TO pagos;
+-- refiere a la creacion de las tablas que formaran la bd ventas /tablas base
+GRANT CREATE VIEW TO pagos;
+
+------------------*** CONEXION ***----------------------
+
+CONNECT pagos/contra
+
+----------*** CREACION DE OBJETOS DE LA BD ***----------
+
+CREATE TABLE PAGOS.nivel
+(
+     idnivel INTEGER NOT NULL,
+     descripcion VARCHAR2(50) NOT NULL ,
+     CONSTRAINT PKNIVEL PRIMARY KEY(idnivel)
+);
+
+CREATE SEQUENCE SQNIVEL
+INCREMENT BY 1 -- incrementa en 1
+START WITH 3;  -- comienza en 1
+
+CREATE TABLE PAGOS.facultad
+(
+     idfacultad INTEGER NOT NULL,
+     descripcion VARCHAR2(60) NOT NULL ,
+     idnivel INTEGER NOT NULL,
+     CONSTRAINT PKFACULTAD PRIMARY KEY(idfacultad),
+     CONSTRAINT FK_FACULTAD_NIVEL 
+     FOREIGN KEY(idnivel)REFERENCES NIVEL(idnivel)
+);
+
+CREATE SEQUENCE SQFACULTAD
+INCREMENT BY 1
+START WITH 43;
+
+CREATE TABLE PAGOS.escuela
+(
+     idescuela INTEGER NOT NULL,
+     descripcion VARCHAR2(60) NOT NULL ,
+     idfacultad INTEGER NOT NULL,
+     CONSTRAINT PKESCUELA PRIMARY KEY(idescuela),
+     CONSTRAINT FK_ESCUELA_FACULTAD 
+     FOREIGN KEY (idfacultad) REFERENCES facultad (idfacultad)
+);
+
+CREATE SEQUENCE SQESCUELA
+INCREMENT BY 1
+START WITH 76;
+
+CREATE TABLE PAGOS.concepto
+(
+     idconcepto INTEGER NOT NULL,
+     descripcion VARCHAR2(60) NOT NULL ,
+     precio NUMBER(10,2) NOT NULL ,     
+     CONSTRAINT PKCONCEPTO PRIMARY KEY(idconcepto)
+);
+
+CREATE SEQUENCE SQCONCEPTO
+INCREMENT BY 1
+START WITH 35;
+
+CREATE TABLE PAGOS.cliente
+(
+     idcliente INTEGER NOT NULL,
+	 apellidos VARCHAR2(50) NOT NULL ,
+     nombres VARCHAR2(50) NOT NULL ,     
+     correo VARCHAR2(35) NOT NULL ,
+     telefono VARCHAR2(12) NULL ,
+     dni VARCHAR2(8) NOT NULL ,
+     CONSTRAINT PKCLIENTE PRIMARY KEY(idcliente),
+     CONSTRAINT U_cliente_dni UNIQUE( dni )
+);
+
+CREATE SEQUENCE SQCLIENTE
+INCREMENT BY 1
+START WITH 26;
+
+CREATE TABLE PAGOS.rol
+(
+     idrol INTEGER NOT NULL,
+     nombre VARCHAR2(40) NOT NULL ,
+     CONSTRAINT PKROL PRIMARY KEY(idrol)
+);
+
+CREATE SEQUENCE SQROL
+INCREMENT BY 1
+START WITH 4;
+
+CREATE TABLE PAGOS.usuario
+(
+     idusuario INTEGER NOT NULL,
+     nombres VARCHAR2(50) NOT NULL ,
+     apellidos VARCHAR2(50) NOT NULL ,
+     usuario  VARCHAR2(20) NOT NULL ,
+     password VARCHAR2(20) NOT NULL ,
+     estado NUMBER(1,0) NOT NULL
+     CONSTRAINT  CHECK_USUARIO_ESTADO CHECK (estado IN (1, 0)),
+     CONSTRAINT PKUSUARIO PRIMARY KEY(idusuario)
+);
+
+CREATE SEQUENCE SQUSUARIO
+INCREMENT BY 1
+START WITH 6;
+
+CREATE TABLE PAGOS.usuario_rol
+(
+     idusuario_rol INTEGER NOT NULL,
+     idrol INTEGER NOT NULL,
+     idusuario INTEGER NOT NULL,
+     CONSTRAINT PKUSUARIO_ROL PRIMARY KEY(idusuario_rol),
+     CONSTRAINT FK_USUARIO_ROL_ROL 
+         FOREIGN KEY (idrol) REFERENCES ROL (idrol),
+     CONSTRAINT FK_USUARIO_ROL_USUARIO
+         FOREIGN KEY (idusuario) REFERENCES USUARIO (idusuario)
+);
+
+CREATE SEQUENCE SQUSUARIOROL
+INCREMENT BY 1
+START WITH 6;
+
+CREATE TABLE PAGOS.Recibo
+(
+     idrecibo INTEGER NOT NULL,
+     fecha  DATE NOT NULL ,
+     importe NUMBER(10,2) NOT NULL ,
+     idcliente INTEGER NOT NULL,
+     idusuario INTEGER NOT NULL,
+     CONSTRAINT PKRECIBO PRIMARY KEY(idrecibo),
+     CONSTRAINT FK_RECIBO_CLIENTE 
+         FOREIGN KEY (idcliente) REFERENCES CLIENTE (idcliente),
+     CONSTRAINT FK_RECIBO_USUARIO
+         FOREIGN KEY (idusuario) REFERENCES USUARIO (idusuario)
+);
+
+CREATE SEQUENCE SQRECIBO
+INCREMENT BY 1
+START WITH 25;
+
+CREATE TABLE PAGOS.Recibodetalle
+(
+     idrecibodetalle INTEGER NOT NULL,
+     cantidad  INTEGER NOT NULL,
+     precio NUMBER(10,2) NOT NULL,
+     idrecibo INTEGER NOT NULL,
+     idconcepto INTEGER NOT NULL,
+	 idescuela INTEGER NOT NULL,
+     CONSTRAINT PKRECIBODETALLE PRIMARY KEY(idrecibodetalle),
+     CONSTRAINT FK_RECIBODETALLE_RECIBO
+         FOREIGN KEY (idrecibo) REFERENCES RECIBO(idrecibo),
+     CONSTRAINT FK_RECIBODETALLE_CONCEPTO
+         FOREIGN KEY (idconcepto) REFERENCES CONCEPTO(idconcepto),
+	 CONSTRAINT FK_RECIBODETALLE_ESCUELA
+         FOREIGN KEY (idescuela) REFERENCES ESCUELA(idescuela)
+);
+
+CREATE SEQUENCE SQRECIBODETALLE
+INCREMENT BY 1
+START WITH 31;

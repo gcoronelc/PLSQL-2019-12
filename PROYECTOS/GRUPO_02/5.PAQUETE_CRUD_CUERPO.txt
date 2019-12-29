@@ -1,0 +1,191 @@
+
+--CUERPO
+create or replace PACKAGE BODY CrudRecibos1
+AS
+--visualizacion de Recibo y detalle recibo correspondiente   
+    PROCEDURE SP_SelecRecibos(
+     p_idrecibo IN INTEGER,
+     p_idcliente IN INTEGER,
+     v_msj OUT SYS_REFCURSOR)
+     IS 
+    BEGIN 
+        OPEN v_msj FOR
+        SELECT r.idrecibo,r.idcliente,r.idusuario, d.precio,c.idconcepto, c.descripcion,r.fecha,r.importe 
+        FROM RECIBO r left join RECIBODETALLE d
+        on r.idrecibo=d.idrecibo   left join concepto c
+        on d.idconcepto=c.idconcepto
+        WHERE r.idrecibo=p_idrecibo OR r.idcliente=p_idcliente;
+       
+    END;
+   
+--Insercion de Recibo 
+    PROCEDURE SP_InsertRecibo(
+ 
+     P_idcliente IN INTEGER,
+     P_idusuario IN INTEGER)
+     as  
+         p_idrecibo INTEGER;
+         cont INTEGER;
+         V_importe integer;
+        v_validar integer;
+        v_validar1 integer;
+    BEGIN
+   --validando
+     select count(*) into v_validar from cliente where idcliente=P_idcliente;
+     if (v_validar= 0 )then
+      Raise_Application_Error( -20000, 'No existe cliente.' );
+     end if;
+     select count(*) into v_validar1 from usuario where idusuario=P_idusuario;
+     if (v_validar1 = 0 )then
+     Raise_Application_Error( -20000, 'No existe Usuario.' );
+     end if;
+     --busacando idrecibo nuevo
+         SELECT MAX(idrecibo)+1 into p_idrecibo FROM recibo;
+          V_importe:=0;
+            if (p_idrecibo>0) then 
+    --Insertando
+             INSERT INTO RECIBO(idrecibo,fecha,importe,idcliente,idusuario)VALUES(p_idrecibo,TO_DATE(sysdate, 'dd/mm/yyyy hh24:mi:ss'),V_importe,p_idcliente,p_idusuario);
+              DBMS_OUTPUT.PUT_LINE('INSERTADO');
+    --dato no valido
+      end if;
+    END; 
+    
+--Insercion de ReciboDetalle    
+     PROCEDURE SP_InsertarReciboD(
+     p_cantidad  IN INTEGER ,
+     p_idrecibo IN INTEGER,
+     p_idconcepto IN INTEGER ,
+	 p_idescuela IN INTEGER)
+    as  
+        p_idreciboD INTEGER;
+        v_importe INTEGER;
+        v_precio integer;
+        v_validar integer;
+        v_validar1 integer;
+        v_validar2 integer;
+    BEGIN
+   --validando
+     select count(*) into v_validar from recibo where idrecibo=p_idrecibo;
+     if (v_validar= 0 )then
+      Raise_Application_Error( -20000, 'No existe recibo.' );
+     end if;
+     select count(*) into v_validar1 from concepto where idconcepto=p_idconcepto;
+     if (v_validar1 = 0 )then
+     Raise_Application_Error( -20000, 'No existe Concepto de Pago.' );
+     end if;
+     select count(*) into v_validar1 from escuela where idescuela=p_idescuela;
+     if (v_validar1 = 0 )then
+     Raise_Application_Error( -20000, 'No existe Escuela.' );
+     end if;
+     --busacando idrecibo nuevo
+         SELECT MAX(idrecibodetalle)+1 into p_idreciboD FROM recibodetalle;
+        SELECT precio into v_precio FROM concepto where idconcepto=p_idconcepto;
+
+            if (p_idrecibo>0) then 
+    --Insertando
+             INSERT INTO RECIBODETALLE(idrecibodetalle,cantidad,precio,idrecibo,idconcepto,idescuela)VALUES(p_idreciboD,p_cantidad,v_precio,p_idrecibo,p_idconcepto,p_idescuela);
+              DBMS_OUTPUT.PUT_LINE('INSERTADO CONCEPTO');
+            select importe+v_precio*p_cantidad into v_importe from recibo where idrecibo=p_idrecibo; 
+              UPDATE recibo SET
+              
+        importe = v_importe
+             WHERE idrecibo= p_idrecibo;
+         DBMS_OUTPUT.PUT_LINE('IMPORTE MODIFICADO ');
+    --dato no valido
+      end if;
+    END;
+--MODIFICAR RECIBO
+    PROCEDURE SP_ModificarRecibo(
+     pr_idrecibo IN INTEGER ,
+     pr_idcliente IN INTEGER,
+     pr_idusuario IN INTEGER)
+    as
+        BUSCAR_ID integer;
+        v_validar integer;
+        v_validar1 integer;
+        
+    BEGIN
+   --validando   
+    select count(*) into BUSCAR_ID from recibo where idrecibo=pr_idrecibo;
+   if (BUSCAR_ID = 0 )then
+    Raise_Application_Error( -20000, 'No existe Recibo.' );
+    end if;
+     select count(*) into v_validar from cliente where idcliente=pr_idcliente; 
+     if (v_validar = 0 )then
+     Raise_Application_Error( -20000, 'No existe Cliente.' );
+     end if;
+     select count(*) into v_validar1 from usuario where idusuario=pr_idusuario;
+     if (v_validar1 = 0 )then
+     Raise_Application_Error( -20000, 'No existe Usuario.' );
+     end if;
+    --modificando 
+        UPDATE recibo SET 
+        idcliente = pr_idcliente,
+        idusuario = pr_idusuario
+        WHERE idrecibo= pr_idrecibo;
+         DBMS_OUTPUT.PUT_LINE('MODIFICADO');
+        
+    END;
+
+--ELIMINACION DE RECIBO
+    PROCEDURE SP_EliminarRecibo(
+        p_idrecibo IN INTEGER)
+    AS
+     cont_d integer;
+     cont_r integer;
+    BEGIN  
+    --validando
+     select count(*) into cont_r from Recibo where idrecibo=p_idrecibo;
+    if(cont_r=0)then
+    Raise_Application_Error( -20000, 'No existe Recibo.' );
+    end if;
+      select count(*) into cont_d from Recibodetalle where idrecibo=p_idrecibo;
+        if(cont_d>0)then
+   --Eliminando Recibodetalle    
+            DELETE FROM Recibodetalle WHERE idrecibo=p_idrecibo;
+            DBMS_Output.Put_Line( 'Se elimino los Recibodetalle del recibo: '||p_idrecibo|| '');
+        else
+            DBMS_Output.Put_Line( 'No hay Recibodetalles del recibo: '||p_idrecibo|| '');
+        end if;
+   --Eliminando el recibo
+        DELETE FROM Recibo WHERE idrecibo=p_idrecibo;
+          DBMS_Output.Put_Line( 'Se elimino el recibo: '||p_idrecibo|| '');
+         
+        
+    END;
+    
+--elimina recibo detalle
+PROCEDURE SP_EliminarReciboD(
+        p_idreciboD IN INTEGER)
+    AS
+    
+     cont_r integer;
+     p_idrecibo INTEGER;
+     p_precio NUMBER(10,2);
+     p_cantidad INTEGER;
+     v_importe NUMBER(10,2);
+    BEGIN  
+    --validando
+     select count(*) into cont_r from recibodetalle where idrecibodetalle=p_idreciboD;
+    if(cont_r=0)then
+    Raise_Application_Error( -20000, 'No existe Recibo Detalle.' );
+    end if;
+      select d.precio, d.cantidad,r.importe,r.idrecibo into p_precio,p_cantidad,v_importe,p_idrecibo  from recibo r inner join recibodetalle d 
+      on r.idrecibo=d.idrecibo
+      where d.idrecibodetalle=p_idrecibod;
+      v_importe:=v_importe-p_precio*p_cantidad;
+   --Eliminando Recibodetalle    
+            DELETE FROM Recibodetalle WHERE idrecibodetalle=p_idreciboD;
+            DBMS_Output.Put_Line( 'Se elimino los Recibodetalle del recibo: '||p_idrecibod|| '');
+            
+      
+              UPDATE recibo SET
+              
+        importe = v_importe
+             WHERE idrecibo= p_idrecibo;
+         DBMS_OUTPUT.PUT_LINE('IMPORTE MODIFICADO a:  '||v_importe||'');
+        
+    END;
+
+END CrudRecibos1;
+
